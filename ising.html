@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>Monte Carlo simulation of the Ising model</title>
+<meta charset="UTF-8">
+<meta name="author" content="Satoshi Morita">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.0/darkly/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="plugins/bootstrap-select.min.css">
+<link rel="stylesheet" href="plugins/bootstrap-slider.min.css">
+
+</head>
+
+<body>
+<div class="container">
+<div class="page-header">
+  <h1>Monte Carlo simulation of the Ising model</h1>
+</div>
+<div class="row">
+  <div class="col-md-6" style="margin-bottom: 20px;">
+    <canvas id="ising" width=399 height=399 style="background-color:#eeeeee;"></canvas>
+    <canvas id="graph" width=399 style="background-color:#202020;"></canvas><br>
+    <button id="clear" type="button" class="btn btn-xs btn-default">clear</button>
+  </div>
+
+  <div class="col-md-6">
+    <div class="btn-group" role="group">
+     <button id="start" type="button" class="btn btn-primary">Start</button>
+     <button id="stop"  type="button" class="btn btn-primary">Stop</button>
+     <button id="step"  type="button" class="btn btn-primary">Step</button>
+    </div>
+
+    <select class="selectpicker" name="algorithm" id="algorithm">
+     <option value="0">Heat-bath method
+     <option value="1">Swendsen-Wang algorithm
+     <option value="2">Wolff algorithm
+    </select>
+  </div>
+
+  <div class="col-md-6" style="margin-top: 40px; margin-bottom: 20px;">
+    <input style="width:80%;" type="text" id="temperature">
+    <p>温度 \(\quad T= \) <span id="temperature_value">2.0</span>
+    </p>
+  </div>
+
+  <div class="col-md-6">
+    <p>各ドットはミクロな磁気モーメントに対応し， 磁気モーメントが上向きなら青色， 下向きなら白色で表示される．</p>
+    <p>ドロップダウンメニューからアルゴリズムを，スライダーから温度を変更できる．Start, Stopボタンで自動更新を再開, 停止できる．Stepボタンを押す度に，1ステップずつ状態が更新される．サイズは周期境界条件の \(L=100\)，磁場は \(H=0.0\) に固定されている．更新時間間隔はアルゴリズムにより変えている．</p>
+    <p>下のグラフは，横軸が温度，縦軸が磁化のプロットである．選択したアルゴリズムにより点の色が変わる．</p>
+    <p>相転移温度 \(T_c\simeq 2.27\) 前後における急激な変化が面白い．</p>
+  </div>
+
+</div> <!-- row -->
+</div> <!-- container -->
+
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="plugins/bootstrap-select.min.js"></script>
+<script src="plugins/bootstrap-slider.min.js"></script>
+<script src="ising.js"></script>
+</body>
+
+</html>
