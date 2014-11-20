@@ -298,9 +298,10 @@ $(function () {
     });
 
     t_slider.on("slide", function(e) {
+        console.log(t_slider.slider("getValue"));
         setT( e.value );
     });
-    t_slider.prev().on("click",function() {
+    t_slider.prev().on("mouseup",function() {
         setT( t_slider.slider("getValue") );
     });
 
@@ -313,7 +314,8 @@ $(function () {
     });
 
     $("#graph").on("click", function(e) {
-        setT( graph.getT(e.offsetX) );
+        var x  = (e.offsetX || e.clientX - $(e.target).offset().left); // polyfill for firefox
+        setT( graph.getT(x) );
     });
 
     $("#clear").on("click", graph.reset);
