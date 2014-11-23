@@ -192,7 +192,8 @@ function Ising() {
         setTemp: function(t) {temp=t;},
         setTempTc: function() {temp=tc;},
         getTemp: function() {return temp;},
-        setAlgorithm: function(a) {algorithm=a;}
+        setAlgorithm: function(a) {algorithm=a;},
+        getAlgorithm: function() {return algorithm;},
     }
 }
 
@@ -220,11 +221,10 @@ function Graph() {
     }
 
     function addPoint(t,m,a) {
-        // console.log(t+" "+m+" "+x+" "+y);
-        if(a==0) context.fillStyle = "#9999ff";
-        else if(a==1) context.fillStyle = "#99ff99";
-        else if(a==2) context.fillStyle = "#ff9999";
-        else context.fillStyle = "#ffffff";
+        if(a==0) context.fillStyle = "rgba(153,153,255,0.5)";
+        else if(a==1) context.fillStyle = "rgba(153,255,153,0.5)";
+        else if(a==2) context.fillStyle = "rgba(255,153,153,0.5)";
+        else context.fillStyle = "rgba(255,255,255,0.5)";
         context.beginPath();
         context.arc( x(t), y(m), 2,0,2*Math.PI,true);
         context.fill();
@@ -282,12 +282,49 @@ var ising = Ising();
 var graph = Graph();
 
 $(function () {
-    var initT = 2.27;
+    var initT = 2.27, timerID;
 
     function setT(t) {
+        var t = Math.round(t*100)/100;
         $( "#temperature_value" ).text( t );
         ising.setTemp(t);
         $("#temperature").slider("setValue", t);
+    }
+
+    function rotateAlgorithm() {
+        var a=ising.getAlgorithm();
+        a = (a+1)%3;
+        ising.setAlgorithm(a);
+        $("#algorithm").selectpicker("val",a);
+    }
+
+    function cool() {
+        var t = ising.getTemp();
+        var dt = 0.1, interval = 1000;
+        if(t>2.6) {
+            dt = 0.1; interval = 1000;
+        } else if(t>2.1) {
+            dt = 0.05; interval = 4000;
+        } else {
+            dt = 0.1; interval = 1000;
+        } 
+
+        t = Math.round( (t-dt)*100 )/100;
+        if (t<0.5) {
+            t = 4.1;
+            rotateAlgorithm();
+        }
+
+        setT(t);
+        timerID = setTimeout(cool, interval);
+        ising.start();
+    }
+    
+    function stopCool() {
+        clearTimeout(timerID);
+        if ($("#auto").hasClass("active")) {
+            $("#auto").button("toggle");
+        }
     }
 
     var t_slider = $("#temperature").slider({
@@ -298,7 +335,6 @@ $(function () {
     });
 
     t_slider.on("slide", function(e) {
-        console.log(t_slider.slider("getValue"));
         setT( e.value );
     });
     t_slider.prev().on("mouseup",function() {
@@ -306,8 +342,14 @@ $(function () {
     });
 
     $("#start").on("click", ising.start);
-    $("#stop" ).on("click", ising.stop);
-    $("#step" ).on("click", ising.step);
+    $("#stop" ).on("click", function() {
+        stopCool();
+        ising.stop();
+    });
+    $("#step" ).on("click", function() {
+        stopCool();
+        ising.step();
+    });
 
     $("#algorithm").on("change", function() {
         ising.setAlgorithm( $(this).val() );
@@ -319,6 +361,15 @@ $(function () {
     });
 
     $("#clear").on("click", graph.reset);
+
+    $("#auto").on("click", function(e) {
+        $(this).button("toggle");
+        if($(this).hasClass("active")) {
+            cool();
+        } else {
+            stopCool();
+        }
+    });
 
     setT(initT);
     ising.start();
