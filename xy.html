@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>Monte Carlo simulation of the XY model</title>
+<meta charset="UTF-8">
+<meta name="author" content="Satoshi Morita">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.0/darkly/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="plugins/bootstrap-select.min.css">
+<link rel="stylesheet" href="plugins/bootstrap-slider.min.css">
+
+</head>
+
+<body>
+<div class="container">
+<div class="page-header">
+  <h1>Monte Carlo simulation of the XY model</h1>
+</div>
+<div class="row">
+  <div class="col-md-5" style="margin-bottom: 20px;">
+    <canvas id="model" width=399 height=399 style="background-color:#eeeeee;"></canvas>
+  </div>
+
+  <div class="col-md-7">
+    <div class="btn-group" role="group">
+     <button id="start" type="button" class="btn btn-primary">Start</button>
+     <button id="stop"  type="button" class="btn btn-primary">Stop</button>
+     <button id="step"  type="button" class="btn btn-primary">Step</button>
+    </div>
+
+    <select class="selectpicker" name="algorithm" id="algorithm">
+     <option value="0">Heat-bath method
+     <option value="1" disabled="disabled">Wolff algorithm
+    </select>
+  </div>
+
+  <div class="col-md-7" style="margin-top: 20px; margin-bottom: 20px;">
+    <div class="btn-group" data-toggle="buttons">
+      <label id="show_vortex" name="show_vortex" class="btn btn-primary active">
+        <input type="checkbox" autocomplete="off" checked>Show Vortices
+      </label>
+      <label  id="rotate_color" name="rotate_color" class="btn btn-primary">
+        <input type="checkbox" autocomplete="off">Color Animation
+      </label>
+    </div>
+
+    <select class="selectpicker" name="color" id="color">
+     <option value="0">Rainbow
+     <option value="1">Blue gradation
+     <option value="2">Three colors
+    </select>
+  </div>
+
+  <div class="col-md-6" style="margin-top: 20px; margin-bottom: 20px;">
+    <input style="width:80%;" type="text" id="temperature">
+    <p>温度 \(\quad T= \) <span id="temperature_value">0.5</span>
+    </p>
+  </div>
+
+  <div class="col-md-6">
+    <p>各ドットはミクロな磁気モーメントに対応し， 磁気モーメントの向きに応じて色が変わる．サイズは周期境界条件の \(L=100\)，磁場は \(H=0.0\) に固定されている．</p>
+    <p>ドロップダウンメニューからアルゴリズムとスピンの色を，スライダーから温度を変更できる．Start, Stopボタンでシミュレーションを再開, 停止できる．Stepボタンを押す度に，1ステップずつ状態が更新される．</p>
+    <p>"Show Vortices" ボタンで，渦の表示を変更できる．渦の色は，右巻き，左巻きに対応している．"Color Animation" ボタンを押すと，スピンに対する色の割り当てを時々刻々と循環させる．スピンが回転しているわけではないので注意．渦の周りでのスピンの振る舞いや，渦の対消滅が観測できて面白い．</p>
+  </div>
+
+</div> <!-- row -->
+</div> <!-- container -->
+
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="plugins/bootstrap-select.min.js"></script>
+<script src="plugins/bootstrap-slider.min.js"></script>
+<script src="xy.js"></script>
+</body>
+
+</html>
