@@ -1,6 +1,6 @@
 var model = function XY() {
     var PI2 = 2.0*Math.PI;
-    var l=100;
+    var l = 100;
     var n = l*l;
     var temp = 1.0;
     var algorithm = 0;
@@ -22,13 +22,12 @@ var model = function XY() {
     var rotate_color = false;
 
     var spin = new Array(n);
-    var spinBefore = new Array(n);
     for(var i=0;i<n;++i) {
         spin[i] = Math.random();
-        spinBefore[i] = spin[i];
     }
 
     var cluster = new Array(n);
+    var isFlip = new Array(n);
 
     function color_red(val) {
         var x = Math.floor(val * 255);
@@ -78,7 +77,6 @@ var model = function XY() {
             y = Math.floor(i/l);
             context.fillStyle = color(spin[i] + color_offset);
             context.fillRect(x*(w+1),y*(w+1),w,w);
-            spinBefore[i] = spin[i];
         }
     }
 
@@ -130,12 +128,12 @@ var model = function XY() {
     }
 
     function updateSpin() {
-        // if(algorithm==0) heatBath();
-        // else if(algorithm==1) swendsenWang();
-        // else if(algorithm==2) wolff();
+        if(algorithm==0) heatBath();
+        else if(algorithm==1) swendsenWang();
+        else if(algorithm==2) wolff();
         // else randomUpdate();
         // randomUpdate();
-        heatBath();
+        // heatBath();
     }
 
     function randomUpdate() {
@@ -162,6 +160,107 @@ var model = function XY() {
             prob = 1.0/(1.0+Math.exp(prob/temp));
             if(Math.random()<prob) spin[i] = spin_new;
         }
+    }
+
+    function swendsenWang() {
+        interval = 200;
+        var axes = Math.random();
+
+        makeCluster(axes);
+
+        for(var i=0;i<n;++i) {
+            isFlip[i] = (Math.random()<0.5);
+        }
+
+        for(var i=0;i<n;++i) {
+            var root = cluster[i];
+            if(isFlip[root]) {
+                spin[i] = flipped_spin(i, axes);
+            }
+        }
+    }
+
+    function wolff() {
+        interval = 200;
+        var axes = Math.random();
+        var count = 0;
+
+        makeCluster(axes);
+        while(count<n/5) {
+            var updateCluster = cluster[randomInt(0,n)];
+            for(var i=0;i<n;++i) {
+                if(cluster[i] == updateCluster) {
+                    spin[i] = flipped_spin(i, axes);
+                    count++;
+                }
+            }
+        }
+    }
+
+    function findRoot(i) {
+        var child = i;
+        var parent = cluster[child];
+        while(child != parent) {
+            child = parent;
+            parent = cluster[child];
+        }
+        return child;
+    }
+
+    function connect(i,j) {
+        var ri = findRoot(i);
+        var rj = findRoot(j);
+        var root = (ri<rj) ? ri : rj;
+        var child;
+        var parent;
+
+        child = i;
+        while(child != root) {
+            parent = cluster[child];
+            cluster[child] = root;
+            child = parent;
+        }
+        child = j;
+        while(child != root) {
+            parent = cluster[child];
+            cluster[child] = root;
+            child = parent;
+        }
+    }
+
+    function makeCluster(axes) {
+        var i, j;
+        for(i=0;i<n;++i) cluster[i]=i;
+        for(i=0;i<n;++i) { // horizontal bonds
+            j = (i+1)%n;
+            if(isConnect(i,j,axes)) connect(i,j);
+        }
+        for(i=0;i<n;++i) { // vartical bonds
+            j = (i+l)%n;
+            if(isConnect(i,j,axes)) connect(i,j);
+        }
+        for(i=0;i<n;++i) {
+            cluster[i] = findRoot(i);
+        }
+    }
+
+    function isConnect(i, j, axes) {
+        var si = PI2*spin[i];
+        var sj = PI2*spin[j];
+        var sa = PI2*axes;
+        var prob = 1.0-Math.exp(-2.0*Math.cos(si-sa)*Math.cos(sj-sa)/temp);
+        return (Math.random()<prob);
+    }
+
+    function flipped_spin(i,axes) {
+        s_new = 2.0*axes - spin[i] + 0.5;
+        while(s_new>1.0) {
+            s_new -= 1.0;
+        }
+        while(s_new<0.0) {
+            s_new += 1.0;
+        }
+        return s_new;
     }
 
     function randomInt(min,max) {
@@ -243,8 +342,10 @@ $(function () {
         setT( t_slider.slider("getValue") );
     });
 
+    $("#algorithm").on("change", function() {
+        model.setAlgorithm( $(this).val() );
+    });
     $("#color").on("change", function() {
-        console.log($(this).val());
         model.setColor( $(this).val() );
     });
     $("#show_vortex").on("click", function() {

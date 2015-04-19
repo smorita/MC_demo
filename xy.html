@@ -29,7 +29,8 @@
 
     <select class="selectpicker" name="algorithm" id="algorithm">
      <option value="0">Heat-bath method
-     <option value="1" disabled="disabled">Wolff algorithm
+     <option value="1">Swendsen-Wang algorithm
+     <option value="2">Wolff algorithm
     </select>
   </div>
 
@@ -50,7 +51,7 @@
     </select>
   </div>
 
-  <div class="col-md-6" style="margin-top: 20px; margin-bottom: 20px;">
+  <div class="col-md-7" style="margin-top: 20px; margin-bottom: 20px;">
     <input style="width:80%;" type="text" id="temperature">
     <p>温度 \(\quad T= \) <span id="temperature_value">0.5</span>
     </p>
@@ -59,7 +60,7 @@
   <div class="col-md-6">
     <p>各ドットはミクロな磁気モーメントに対応し， 磁気モーメントの向きに応じて色が変わる．サイズは周期境界条件の \(L=100\)，磁場は \(H=0.0\) に固定されている．</p>
     <p>ドロップダウンメニューからアルゴリズムとスピンの色を，スライダーから温度を変更できる．Start, Stopボタンでシミュレーションを再開, 停止できる．Stepボタンを押す度に，1ステップずつ状態が更新される．</p>
-    <p>"Show Vortices" ボタンで，渦の表示を変更できる．渦の色は，右巻き，左巻きに対応している．"Color Animation" ボタンを押すと，スピンに対する色の割り当てを時々刻々と循環させる．スピンが回転しているわけではないので注意．渦の周りでのスピンの振る舞いや，渦の対消滅が観測できて面白い．</p>
+    <p>"Show Vortices" ボタンで，渦の表示を変更できる．渦の色は，右巻き，左巻きに対応している．"Color Animation" ボタンを押すと，スピンに対する色の割り当てを時々刻々と循環させる．スピンが回転しているわけではないので注意．渦の周りでのスピンの振る舞いや，渦の対消滅が観測できて面白い．急冷させた場合，熱浴法では渦が長時間残るが，クラスターフリップで状態更新すると渦は瞬時に消滅することが分かる．</p>
   </div>
 
 </div> <!-- row -->

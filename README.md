@@ -10,3 +10,5 @@ Demos of Monte Carlo simulation
 
 ### [XY model](http://smorita.github.io/MC_demo/xy.html)
 * Heat-bath method
+* Swendsen-Wang algorithm
+* Wolff algorithm
