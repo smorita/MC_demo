@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<title>Monte Carlo simulation of the transverse-field Ising model</title>
+<meta charset="UTF-8">
+<meta name="author" content="Satoshi Morita">
+<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.0/darkly/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="plugins/bootstrap-select.min.css">
+<link rel="stylesheet" href="plugins/bootstrap-slider.min.css">
+
+</head>
+
+<body>
+<div class="container">
+<div class="page-header">
+  <h1>Monte Carlo simulation of the transverse-field Ising model</h1>
+</div>
+<div class="row">
+  <div class="col-md-6" style="margin-bottom: 20px;">
+    <canvas id="model" width=399 height=400 style="background-color:#eeeeee;"></canvas>
+  </div>
+
+  <div class="col-md-6">
+    <div class="btn-group" role="group">
+     <button id="start" type="button" class="btn btn-primary">Start</button>
+     <button id="stop"  type="button" class="btn btn-primary">Stop</button>
+     <button id="step"  type="button" class="btn btn-primary">Step</button>
+    </div>
+  </div>
+
+  <div class="col-md-6" style="margin-top: 40px; margin-bottom: 20px;">
+    <input style="width:100%;" type="text" id="temp_slider">
+    <p>温度 \(\quad T/J= \) <span id="temp_value">0.1</span>
+    </p>
+    <input style="width:100%;" type="text" id="gamma_slider">
+    <p>横磁場 \(\quad \Gamma/J= \) <span id="gamma_value">1.0</span>
+    </p>
+  </div>
+
+  <div class="col-md-6">
+    <p>一次元横磁場Ising模型
+      \[ H = -J \sum_{i=1}^N \sigma_i^z \sigma_{i+1}^z -\Gamma \sum_{i=1}^{N} \sigma_i^x \]
+      の連続虚時間モンテカルロ法によるシミュレーション．</p>
+    <p>縦のラインが1つのスピンに対応し，横方向が実空間，縦方向が虚時間となっている．磁気モーメントが上向きなら青色， 下向きなら白色で表示される．</p>
+    <p>スライダーから温度，横磁場を変更できる．Start, Stopボタンで自動更新を再開, 停止できる．Stepボタンを押す度に，1ステップずつ状態が更新される．周期境界条件でサイズは \(L=100\)．</p>
+  </div>
+
+</div> <!-- row -->
+</div> <!-- container -->
+
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="plugins/bootstrap-select.min.js"></script>
+<script src="plugins/bootstrap-slider.min.js"></script>
+<script src="tfim.js"></script>
+</body>
+
+</html>
