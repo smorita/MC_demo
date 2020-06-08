@@ -1,64 +1,83 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-<title>Monte Carlo simulation of the Ising model</title>
-<meta charset="UTF-8">
-<meta name="author" content="Satoshi Morita">
-<link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.0/darkly/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="plugins/bootstrap-select.min.css">
-<link rel="stylesheet" href="plugins/bootstrap-slider.min.css">
 
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="author" content="Satoshi Morita" />
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.css"
+    integrity="sha384-zB1R0rpPzHqg7Kpt0Aljp8JPLqbXI3bhnPWROx27a9N0Ll6ZP/+DiW/UqRcLbRjq" crossorigin="anonymous">
+  <!-- The loading of KaTeX is deferred to speed up page rendering -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js"
+    integrity="sha384-y23I5Q6l+B6vatafAwxRu/0oK/79VlbSz7Q9aiSZUvyWYIYsd+qj+o24G5ZU2zJz"
+    crossorigin="anonymous"></script>
+  <!-- To automatically render math in text elements, include the auto-render extension: -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/contrib/auto-render.min.js"
+    integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"
+    onload="renderMathInElement(document.body);"></script>
+
+  <!-- <script src="https://kit.fontawesome.com/ae5a8fc31f.js" crossorigin="anonymous"></script> -->
+  <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+
+  <title>Monte Carlo simulation of the Ising model</title>
 </head>
 
 <body>
-<div class="container">
-<div class="page-header">
-  <h1>Monte Carlo simulation of the Ising model</h1>
-</div>
-<div class="row">
-  <div class="col-md-6" style="margin-bottom: 20px;">
-    <canvas id="ising" width=399 height=399 style="background-color:#eeeeee;"></canvas>
-    <canvas id="graph" width=399 style="background-color:#202020;"></canvas><br>
-    <button id="clear" type="button" class="btn btn-xs btn-default">clear</button>
-  </div>
-
-  <div class="col-md-6">
-    <div class="btn-group" role="group">
-     <button id="start" type="button" class="btn btn-primary">Start</button>
-     <button id="stop"  type="button" class="btn btn-primary">Stop</button>
-     <button id="step"  type="button" class="btn btn-primary">Step</button>
+  <canvas id="ising" class="fixed-top" style="z-index: -1; width: 100vw; height: 100vh;"></canvas>
+    <!-- <canvas id="ising" width="100%" height="100%" class="fixed-top"
+    style="background-color: #ccffff; position: fixed; top: 0px; left: 0px; z-index: -1;"></canvas> -->
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-10 col-lg-8 col-xl-6 py-3 text-white" style="background-color:rgba(0, 0, 0, 0.75);">
+        <h1 class="h4">Monte Carlo simulation of the Ising model</h1>
+        <div id="options" class="">
+          <label for="temperature">Temperature: T = <span id="temperature_text">2.27</span></label>
+          <input id="temperature" type="range" class="custom-range" min="0.5" max="4.0" step="0.01">
+          <label for="algorithm">Algorithm</label>
+          <select id="algorithm" class="custom-select custom-select-sm mb-3">
+            <option value="0">Heat-bath method</option>
+            <option value="1">Swendsen-Wang algorithm</option>
+            <option value="2">Wolff algorithm</option>
+          </select>
+        </div>
+        <div id="explanation" class="collapse text-justify">
+          <p>Each dot represents a microscopic magnetic moment, which is blue (white) when a magnetic moment is up (down). Sudden change occurs around the critical temperature \(T_c\simeq 2.27\).</p>
+        </div>
+        <div id="explanation-ja" class="collapse text-justify">
+          <p>各ドットはミクロな磁気モーメントに対応し， 磁気モーメントが上向きなら青色， 下向きなら白色で表示される．相転移温度 \(T_c\simeq 2.27\) 前後における急激な変化が面白い．</p>
+        </div>
+        <div class="text-right">
+          <!-- <button class="btn btn-light btn-sm" data-toggle="collapse" href="#options" role="button" aria-expanded="false">Options</button>
+          <button class="btn btn-light btn-sm" data-toggle="collapse" href="#explanation" role="button" aria-expanded="false">Explanation</button> -->
+          <!-- <button class="btn btn-light btn-sm" data-toggle="collapse" href="#options" role="button" aria-expanded="false">Options</button>
+          <button class="btn btn-light btn-sm" data-toggle="collapse" href="#explanation" role="button" aria-expanded="false">Explanation</button> -->
+          <a class="text-white" data-toggle="collapse" href="#explanation" role="button" aria-expanded="false">Explanation</a>
+          /
+          <a class="text-white" data-toggle="collapse" href="#explanation-ja" role="button" aria-expanded="false">解説</a>
+        </div>
+      </div>
     </div>
-
-    <select class="selectpicker" name="algorithm" id="algorithm">
-     <option value="0">Heat-bath method
-     <option value="1">Swendsen-Wang algorithm
-     <option value="2">Wolff algorithm
-    </select>
   </div>
 
-  <div class="col-md-6" style="margin-top: 40px; margin-bottom: 20px;">
-    <input style="width:80%;" type="text" id="temperature">
-    <button id="auto" type="button" class="btn btn-xs btn-primary">Auto</button>
-    <p>温度 \(\quad T= \) <span id="temperature_value">2.0</span>
-    </p>
-  </div>
-
-  <div class="col-md-6">
-    <p>各ドットはミクロな磁気モーメントに対応し， 磁気モーメントが上向きなら青色， 下向きなら白色で表示される．</p>
-    <p>ドロップダウンメニューからアルゴリズムを，スライダーから温度を変更できる．Start, Stopボタンで自動更新を再開, 停止できる．Stepボタンを押す度に，1ステップずつ状態が更新される．サイズは周期境界条件の \(L=100\)，磁場は \(H=0.0\) に固定されている．更新時間間隔はアルゴリズムにより変えている．Autoボタンを押すと，自動でゆっくりと温度を下げる．</p>
-    <p>下のグラフは，横軸が温度，縦軸が磁化のプロットである．選択したアルゴリズムにより点の色が変わる．</p>
-    <p>相転移温度 \(T_c\simeq 2.27\) 前後における急激な変化が面白い．</p>
-  </div>
-
-</div> <!-- row -->
-</div> <!-- container -->
-
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<script src="plugins/bootstrap-select.min.js"></script>
-<script src="plugins/bootstrap-slider.min.js"></script>
-<script src="ising.js"></script>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+  <script src="ising.js"></script>
 </body>
 
 </html>
